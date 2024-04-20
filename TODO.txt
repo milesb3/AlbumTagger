@@ -1,0 +1,9 @@
+TODO:
+    Make input to tag_album directory where files to tag are stored
+    Reformat csv file to always be named album-tagger-info.csv in dir where files will be stored and to be cleaner overall
+    Create class to parse album-tagger-info.csv as to not rely on pandas
+    Create README.md file
+    Create album-tagger-info.csv example/template in this directory
+
+Completed:
+    Initial commit
