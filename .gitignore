@@ -1,1 +1,3 @@
-*.csv
+*.atd
+!empty-template.atd
+!example.atd

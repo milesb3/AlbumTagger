@@ -1,6 +1,6 @@
 #This is an example for the album 'Public Strain' by Women
 #Comments start with "#"
-#Place file in directory with album audio files. Run tag_album.py with a .atd file as the input.
+#Place file in directory with album audio files. Run tag_album.py with .atd file as the input.
 
 #Start file with values that pertain to the entire album
 album = Public Strain
@@ -9,18 +9,19 @@ cover_file_path = cover.png
 year = 2010
 genre = Post-Punk
 
-#The rest of the file is a tab delimited table of the metadata for each track of the album.
+#The rest of the file is a table delimited with "|" of the metadata for each track of the album.
 #This is where you define which audio file relates to which track.
-#Feel free to add as many tabs between inputs as you want to make it more readable
-filename                    disc_num    track_num   track_title             artist
-1_Cant-You_See.opus         1           1           Can't You See           Women
-2_Heat-Distraction.opus     1           2           Heat Distraction        Women
-3_Narrow-With-the-Hall.opus 1           3           Narrow With the Hall    Women
-4_Penal-Colony.opus         1           4           Penal Colony            Women
-5_Bells.opus                1           5           Bells                   Women
-6_China-Steps.opus          1           6           China Steps             Women
-7_Untogether.opus           1           7           Untogether              Women
-8_Drag-Open.opus            1           8           Drag Open               Women
-9_Locust-Valley.opus        1           9           Locust Valley           Women
-10_Venice-Lockjaw.opus      1           10          Venice Lockjaw          Women
-11_Eyesore.opus             1           11          Eyesore                 Women
+#Feel free to add as many spaces between inputs as you want to make it more readable. 
+#The parsing should work as long as there are | delimiters.
+filename                   |disc_num   |track_num  |track_title             |artist
+1_Cant-You-See.opus        |1          |1          |Can't You See           |Women
+2_Heat-Distraction.opus    |1          |2          |Heat Distraction        |Women
+3_Narrow-With-the-Hall.opus|1          |3          |Narrow With the Hall    |Women
+4_Penal-Colony.opus        |1          |4          |Penal Colony            |Women
+5_Bells.opus               |1          |5          |Bells                   |Women
+6_China-Steps.opus         |1          |6          |China Steps             |Women
+7_Untogether.opus          |1          |7          |Untogether              |Women
+8_Drag-Open.opus           |1          |8          |Drag Open               |Women
+9_Locust-Valley.opus       |1          |9          |Locust Valley           |Women
+10_Venice-Lockjaw.opus     |1          |10         |Venice Lockjaw          |Women
+11_Eyesore.opus            |1          |11         |Eyesore                 |Women

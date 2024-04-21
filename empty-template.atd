@@ -1,0 +1,9 @@
+#empty-template.atd
+
+album =
+album_artist =
+cover_file_path =
+year =
+genre =
+
+filename    |disc_num   |track_num  |track_title    |artists

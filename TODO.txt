@@ -1,9 +1,14 @@
 TODO:
-    Make input to tag_album directory where files to tag are stored
-    Reformat csv file to custom <filename>.atd (album tagger definition) in dir where files will be stored and to be cleaner overall
-    Create class to parse .atd files as to not rely on pandas
-    Create README.md file
-    Create album-tagger-info.csv example/template in this directory
+    Add pull_rym_metadata.py to generate .atd file from rym webpage
+    Add additional options to tag_album.py
+        Print parsed metadata from album_info as soon as constructor has finished
+        Don't print ffmpeg output when converting files to mp3
 
 Completed:
     Initial commit
+    Make input to tag_album directory where files to tag are stored
+    Reformat csv file to custom <filename>.atd (album tagger definition) in dir where files will be stored and to be cleaner overall
+    Create class to parse .atd files as to not rely on pandas
+    Update tag_album.py to use custom parser
+    Create album-tagger-info.csv example/template in this directory
+    Create README.md file

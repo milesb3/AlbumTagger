@@ -1,3 +1,5 @@
+NUM_TRACKINFO_ATTRIBUTES :int = 5
+
 class AlbumInfo:
     def __init__(self, atd_file :str):
         '''
@@ -9,7 +11,7 @@ class AlbumInfo:
         self.album :str = ""
         self.album_artist :str = ""
         self.cover_path :str = ""
-        #TODO add attribute to store cover bytes
+        self.cover_bytes :bytes = 0
         self.year :int = 0
         self.genre :str = ""
         self.tracks_info :list[TrackInfo] = []
@@ -55,6 +57,12 @@ class AlbumInfo:
         while (atd_line := atd_info.readline()):
             self.tracks_info.append(TrackInfo(atd_line.split("|")))
         atd_info.close()
+        #Convert cover into bytes
+        try:
+            self.cover_bytes = open(f'{self.dir}{self.cover_path}', "rb").read()
+        except Exception as error:
+            print(f'Warning! Failed to convert {self.dir}{self.cover_path} to bytes. Received error:')
+            print(error)
 
     def print_attributes(self):
         '''
@@ -81,14 +89,19 @@ class TrackInfo:
         self.track_title :str = ""
         self.artist :str = ""
 
+        #Check if input string list is the correct length
+        if (len(atd_track_entry) != NUM_TRACKINFO_ATTRIBUTES):
+            print("Warning! Could not add track info for a track due to incorrect input atd_track_entry string list length")
+            return
+
         #Assign input list of strings to TrackInfo attributes
         self.filename = atd_track_entry[0].strip(" \n")
         try:
-            self.disc_num = atd_track_entry[1].strip(" \n")
+            self.disc_num = int(atd_track_entry[1].strip(" \n"))
         except:
             print(f'Warning! Unable to read disc_num tag for track tied to file {self.filename}. disc_num must be written as an integer.')
         try:
-            self.track_num = atd_track_entry[2].strip(" \n")
+            self.track_num = int(atd_track_entry[2].strip(" \n"))
         except:
             print(f'Warning! Unable to read tack_num tag for track tied to file {self.filename}. track_num must be written as an integer.')
         self.track_title = atd_track_entry[3].strip(" \n")
