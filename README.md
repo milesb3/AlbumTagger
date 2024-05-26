@@ -9,7 +9,9 @@ to automatically convert files to mp3 (if necessary) and tag them based on the i
 This program is functional on my Ubuntu 22.04.4 LTS system, and relies on these dependencies:
 - ffmpeg (for converting audio files that do not have extension mp3 to mp3).
 - The eyeD3 python library (for tagging the mp3 files).
+- musicbrainzngs python3 library (used for pulling metadata in get_musicbrainz_metadata.py)
 
 ### Future plans for this project
-- Creating a script to pull metadata from https://rateyourmusic.com/ album pages to automatically generate .atd files. This would mean that the user would only need to specify which file in their album directory relates to which track.
+- Creating a script to pull metadata from musicbrainzngs python3 library to automatically generate .atd files. This would mean that the user would only need to specify which file in their album directory relates to which track.
 - Add more options to tag_album.py, such as printing the parsed metadata from the .atd file and not printing the ffmpeg output.
+- Add option to set album cover on a track by track basis

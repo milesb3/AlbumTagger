@@ -1,8 +1,11 @@
 TODO:
-    Add pull_rym_metadata.py to generate .atd file from rym webpage
+    Fix cover_file_path atd ambiguous input name
+    Fix year not tagging properly
+    Add get_musicbrainz_metadata.py to pull metadata from musicbrainz for atd files
     Add additional options to tag_album.py
         Print parsed metadata from album_info as soon as constructor has finished
         Don't print ffmpeg output when converting files to mp3
+    Add option to set cover per track, not just album wide, in atd files
 
 Completed:
     Initial commit

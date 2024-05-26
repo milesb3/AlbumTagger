@@ -12,7 +12,7 @@ from eyed3.core import Date
 
 #Handle user input
 if (len(sys.argv) < 2):
-    print("Insufficent parameters provided! Run program lie 'python3 tag_album <.atd file>'")
+    print("Insufficent parameters provided! Run program like 'python3 tag_album <.atd file>'")
     exit(-1)
 elif (not os.path.exists(sys.argv[1])):
     print("Input file not found!")
