@@ -36,8 +36,9 @@ for track_info in album_info.tracks_info:
         track_info.filename = os.path.splitext(track_info.filename)[0] + ".mp3"
         convert_out :str = f'{album_info.dir}{track_info.filename}'
 
+        print(f'Coverting {convert_in} to {convert_out}...')
         try:
-            subprocess.run(f'ffmpeg -i {convert_in} {convert_out}', shell=True)
+            subprocess.run(f'ffmpeg -loglevel error -i {convert_in} {convert_out}', shell=True)
         except Exception as error:
             print(f'Error! Failed to convert {convert_in} to {convert_out} using ffmpeg. Received error message:')
             print(error)

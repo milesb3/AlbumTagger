@@ -1,8 +1,23 @@
+import sys
 import musicbrainzngs
+import os
 
-#TODO set this as command line input
-atd_filename = "capsule-losing-contact.atd"
-release_id = "6e8f4e70-01cf-4cb8-bd32-84a537acb3e5"
+#Handle user input
+#Sort normal input and switch input. Switch inputs start with "-"
+input_normal :list[str] = []
+input_switches :list[str] = []
+for i in range(1,len(sys.argv)):
+    input_switches.append(sys.argv[i]) if (sys.argv[i][0] == "-") else input_normal.append(sys.argv[i])
+
+#Handle normal input
+if len(input_normal) < 2:
+    print("Insufficient number of arguments provided! Please provide input like <atd_filename> <musicbrainz_release_id>. For example:")
+    print("python3 get_musicbrainz_metadata.py aphex_twin_drukqs.atd facbe59c-6bf7-45c6-bb0c-85aaba8d8670")
+    exit(-1)
+else:
+    atd_filename :str = input_normal[0]
+    release_id :str = input_normal[1]
+    del input_normal
 
 print("Executing request with musicbrainzngs...")
 musicbrainzngs.set_useragent("album-tagger", "0.1")
@@ -25,9 +40,11 @@ else:
     atd_file.write("genre =\n\n")
     atd_file.write("filename\t|disc_num\t|track_num\t|track_title\t|artists\n")
 
+    #TODO Handle -f switch for inputting filenames into atd file
+
     for disc_num, disc in enumerate(result["release"]["medium-list"]):
         for track_num, track in enumerate(disc["track-list"]):
-            atd_file.write(f'        \t|{disc_num+1}\t|{track_num+1}\t|{track["recording"]["title"]}\t|{album_artist}\n')
+            atd_file.write(f'        \t|{disc_num+1}      \t|{track_num+1}       \t|{track["recording"]["title"]}\t|{album_artist}\n')
 
     atd_file.close()
 
