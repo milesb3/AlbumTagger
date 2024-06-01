@@ -95,17 +95,17 @@ class TrackInfo:
             return
 
         #Assign input list of strings to TrackInfo attributes
-        self.filename = atd_track_entry[0].strip(" \n")
+        self.filename = atd_track_entry[0].strip(" \t\n")
         try:
-            self.disc_num = int(atd_track_entry[1].strip(" \n"))
+            self.disc_num = int(atd_track_entry[1].strip(" \t\n"))
         except:
             print(f'Warning! Unable to read disc_num tag for track tied to file {self.filename}. disc_num must be written as an integer.')
         try:
-            self.track_num = int(atd_track_entry[2].strip(" \n"))
+            self.track_num = int(atd_track_entry[2].strip(" \t\n"))
         except:
             print(f'Warning! Unable to read tack_num tag for track tied to file {self.filename}. track_num must be written as an integer.')
-        self.track_title = atd_track_entry[3].strip(" \n")
-        self.artist = atd_track_entry[4].strip(" \n")
+        self.track_title = atd_track_entry[3].strip(" \t\n")
+        self.artist = atd_track_entry[4].strip(" \t\n")
 
     def print_attributes(self):
         '''
