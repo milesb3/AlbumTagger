@@ -17,7 +17,6 @@ if len(input_normal) < 2:
 else:
     atd_filename :str = input_normal[0]
     release_id :str = input_normal[1]
-    del input_normal
 
 print("Executing request with musicbrainzngs...")
 musicbrainzngs.set_useragent("album-tagger", "0.1")
@@ -40,12 +39,34 @@ else:
     atd_file.write("genre =\n\n")
     atd_file.write("filename\t|disc_num\t|track_num\t|track_title\t|artists\n")
 
-    #TODO Handle -f switch for inputting filenames into atd file
+    if "-f" in input_switches:
+        #Extract directory of filenames from atd_filename
+        path_end_i :int = -1
+        for i, character in enumerate(atd_filename):
+            if character == "/":
+                path_end_i = i
+        if path_end_i == -1:
+            atd_dir = "."
+        else:
+            atd_dir :str = atd_filename[:path_end_i+1]
 
+        #Add any files with music extensions to the filenames list
+        filenames :list[str] = []
+        common_music_file_extensions = [".mp3", ".opus", ".wav", ".m4a", ".flac", ".aac", ".ogg", ".wma", ".aiff", "alac", "ape"]
+        for file in os.listdir(atd_dir):
+            if os.path.splitext(file)[1] in common_music_file_extensions:
+                filenames.append(file)
+        filenames = sorted(filenames)
+    
+    filename_i :int = 0
     for disc_num, disc in enumerate(result["release"]["medium-list"]):
         for track_num, track in enumerate(disc["track-list"]):
-            atd_file.write(f'        \t|{disc_num+1}      \t|{track_num+1}       \t|{track["recording"]["title"]}\t|{album_artist}\n')
+            try:
+                atd_file.write(f'{filenames[filename_i]}\t|{disc_num+1}      \t|{track_num+1}       \t|{track["recording"]["title"]}\t|{album_artist}\n')
+                filename_i += 1
+            except:
+                atd_file.write(f'        \t|{disc_num+1}      \t|{track_num+1}       \t|{track["recording"]["title"]}\t|{album_artist}\n')
 
     atd_file.close()
 
-    print(f'Successfully generated "{atd_filename}"! You will need to specify the cover art path, genres, and filenames in this atd file before using it with tag_album.py.')
+    print(f'Successfully generated "{atd_filename}"! Please check the cover art path, genres, and filenames in this atd file before using it with tag_album.py.')

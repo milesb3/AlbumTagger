@@ -7,7 +7,6 @@ import eyed3
 from eyed3.id3.frames import ImageFrame
 from eyed3.core import Date
 
-#TODO find way to pull tracklist from rym
 #TODO add option to print AlbumInfo
 
 #Handle user input
@@ -36,7 +35,7 @@ for track_info in album_info.tracks_info:
         track_info.filename = os.path.splitext(track_info.filename)[0] + ".mp3"
         convert_out :str = f'{album_info.dir}{track_info.filename}'
 
-        print(f'Coverting {convert_in} to {convert_out}...')
+        print(f'Converting {convert_in} to {convert_out}...')
         try:
             subprocess.run(f'ffmpeg -loglevel error -i {convert_in} {convert_out}', shell=True)
         except Exception as error:
