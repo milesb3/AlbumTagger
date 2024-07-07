@@ -1,3 +1,5 @@
+import os
+
 NUM_TRACKINFO_ATTRIBUTES :int = 5
 
 class AlbumInfo:
@@ -17,14 +19,7 @@ class AlbumInfo:
         self.tracks_info :list[TrackInfo] = []
 
         #Determine album path directory from input atd file
-        last_dir_char_i :int = -1
-        for i in range(len(atd_file)):
-            if (atd_file[i] == "/"):
-                last_dir_char_i = i
-        if (last_dir_char_i == -1):
-            self.dir = "."
-        else:
-            self.dir = atd_file[:last_dir_char_i+1]
+        self.dir = os.path.dirname(atd_file)
 
         #Read album wide parameters from atd file
         atd_info = open(atd_file, "r")

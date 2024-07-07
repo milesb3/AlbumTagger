@@ -37,7 +37,6 @@ else:
     atd_file.write(f'album_artist = {album_artist}\n')
     atd_file.write(f'year = {year}\n')
     atd_file.write("genre =\n\n")
-    atd_file.write("filename\t|disc_num\t|track_num\t|track_title\t|artists\n")
 
     if "-f" in input_switches:
         #Extract directory of filenames from atd_filename
@@ -57,15 +56,37 @@ else:
             if os.path.splitext(file)[1] in common_music_file_extensions:
                 filenames.append(file)
         filenames = sorted(filenames)
-    
+
+    #Create list to store track information for printing
+    track_print :list[list[str]] = []
+    track_print.append(["filename", "disc_num", "track_num", "track_title", "artists"])
+
+    #Create iterator to loop through filenames
     filename_i :int = 0
+
+    #Write track information to track_print
     for disc_num, disc in enumerate(result["release"]["medium-list"]):
         for track_num, track in enumerate(disc["track-list"]):
             try:
-                atd_file.write(f'{filenames[filename_i]}\t|{disc_num+1}      \t|{track_num+1}       \t|{track["recording"]["title"]}\t|{album_artist}\n')
+                track_print.append([filenames[filename_i], str(disc_num+1), str(track_num+1), track["recording"]["title"], album_artist])
                 filename_i += 1
             except:
-                atd_file.write(f'        \t|{disc_num+1}      \t|{track_num+1}       \t|{track["recording"]["title"]}\t|{album_artist}\n')
+                track_print.append(["", str(disc_num+1), str(track_num+1), track["recording"]["title"], album_artist])
+
+    #Find longest entry in each column, so table of track info can be printed in a more organized fashion
+    col_lengths :list[int] = [0] * len(track_print[0])
+    for row in track_print:
+        for i in range(len(row)):
+            if len(row[i]) > col_lengths[i]:
+                col_lengths[i] = len(row[i])
+
+    #Write track info to atd.file
+    for row in track_print:
+        for i in range(len(row)):
+            atd_file.write(f'{row[i]}{" "*(col_lengths[i]-len(row[i]))}')
+            if i != (len(row) - 1):
+                atd_file.write("\t|")
+        atd_file.write("\n")
 
     atd_file.close()
 
