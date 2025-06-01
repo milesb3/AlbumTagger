@@ -1,5 +1,7 @@
 TODO:
-    - Fix cover_file_path atd ambiguous input name
+    - Separate atd file parser from AlbumInfo and TrackInfo class constructors (AlbumInfo.py)
+    - Replace homemade argument parser with python argparse (get_musicbrainz_metadata.py, tag_album.py)
+    - Fix cover_file_path atd ambiguous input name (parser)
     - Fix year not tagging properly
     - Add additional options to tag_album.py
         - Print parsed metadata from album_info as soon as constructor has finished
@@ -8,12 +10,3 @@ TODO:
     - Add CLI to organize album music files within an atd file, then tag the album.
     - Rust rewrite ? (for learning purposes)
 
-Completed:
-    - Add get_musicbrainz_metadata.py to pull metadata from musicbrainz for atd files
-    - Initial commit
-    - Make input to tag_album directory where files to tag are stored
-    - Reformat csv file to custom <filename>.atd (album tagger definition) in dir where files will be stored and to be cleaner overall
-    - Create class to parse .atd files as to not rely on pandas
-    - Update tag_album.py to use custom parser
-    - Create album-tagger-info.csv example/template in this directory
-    - Create README.md file

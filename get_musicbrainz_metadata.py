@@ -1,93 +1,125 @@
-import sys
+import argparse
 import musicbrainzngs
 import os
 
-#Handle user input
-#Sort normal input and switch input. Switch inputs start with "-"
-input_normal :list[str] = []
-input_switches :list[str] = []
-for i in range(1,len(sys.argv)):
-    input_switches.append(sys.argv[i]) if (sys.argv[i][0] == "-") else input_normal.append(sys.argv[i])
+COMMON_MUSIC_FILE_EXTS = [".mp3", ".opus", ".wav", ".m4a", ".flac", ".aac", ".ogg", ".wma", ".aiff", "alac", "ape"]
 
-#Handle normal input
-if len(input_normal) < 2:
-    print("Insufficient number of arguments provided! Please provide input like <atd_filename> <musicbrainz_release_id>. For example:")
-    print("python3 get_musicbrainz_metadata.py aphex_twin_drukqs.atd facbe59c-6bf7-45c6-bb0c-85aaba8d8670")
-    exit(-1)
-else:
-    atd_filename :str = input_normal[0]
-    release_id :str = input_normal[1]
+#Parse user input
+parser = argparse.ArgumentParser(
+        prog='AlbumTagger_GenAtd',
+        description='Fetches album metadata from MusicBrainz and writes it to an atd file')
 
-print("Executing request with musicbrainzngs...")
+parser.add_argument('atd_filename')
+parser.add_argument('release_id')
+parser.add_argument('-f', '--files_include', action='store_true')
+
+args = parser.parse_args()
+
+#Attempt MusicBrainz metadata request
+print("executing request with musicbrainzngs...")
 musicbrainzngs.set_useragent("album-tagger", "0.1")
 try:
-    result = musicbrainzngs.get_release_by_id(release_id, includes=["recordings", "artists", "labels"])
+    result = musicbrainzngs.get_release_by_id(args.release_id, includes=["recordings", "artists", "labels"])
 except Exception as error:
-    print(f'Error! Failed to fetch release:\n{error}')
+    print(f'error! failed to fetch release:\n{error}')
+    exit(1)
+
+#Extract information from result variable into more readable variables
+album_title :str = result.get("release", {}).get("title")
+album_artist :str = result.get("release", {}).get("artist-credit-phrase")
+year :str = result.get("release", {}).get("date")
+if (year):
+    year = year.split("-")[0]
+
+# --------------------------------------------------------------------
+#Generate atd file from MusicBrainz metadata request result
+# --------------------------------------------------------------------
+print(f'generating "{args.atd_filename}"...')
+
+#Write album-wide information section
+atd_file = open(args.atd_filename, "w")
+atd_file.write(f'#{args.atd_filename}\n\n')
+
+if (album_title):
+    atd_file.write(f'album_title = {album_title}\n')
 else:
-    print(f'Generating "{atd_filename}"...')
-    album :str = result["release"]["title"]
-    album_artist :str = result["release"]["artist-credit-phrase"]
-    year :str = result["release"]["date"].split("-")[0]
+    atd_file.write("#album_title = (could not extract this data from MusicBrainz)\n")
 
-    atd_file = open(atd_filename, "w")
-    atd_file.write(f'#{atd_filename}\n\n')
-    atd_file.write(f'album = {album}\n')
-    atd_file.write("cover_file_path =\n")
+if (album_artist):
     atd_file.write(f'album_artist = {album_artist}\n')
+else:
+    atd_file.write("#album_artist = (could not extract this data from MusicBrainz)\n")
+
+if (year):
     atd_file.write(f'year = {year}\n')
-    atd_file.write("genre =\n\n")
+else:
+    atd_file.write("#year = (could not extract this data from MusicBrainz)\n")
 
-    if "-f" in input_switches:
-        #Extract directory of filenames from atd_filename
-        path_end_i :int = -1
-        for i, character in enumerate(atd_filename):
-            if character == "/":
-                path_end_i = i
-        if path_end_i == -1:
-            atd_dir = "."
-        else:
-            atd_dir :str = atd_filename[:path_end_i+1]
+atd_file.write("\n#some optional information to add to your tracks:\n")
+atd_file.write("#cover_file_path =\n")
+atd_file.write("#genre =\n\n")
 
-        #Add any files with music extensions to the filenames list
-        filenames :list[str] = []
-        common_music_file_extensions = [".mp3", ".opus", ".wav", ".m4a", ".flac", ".aac", ".ogg", ".wma", ".aiff", "alac", "ape"]
-        for file in os.listdir(atd_dir):
-            if os.path.splitext(file)[1] in common_music_file_extensions:
-                filenames.append(file)
-        filenames = sorted(filenames)
+#Write track specific information
+if (args.files_include):
+    #If the files_include flag was set true, all audio files will in current
+    #directory will be added to the filenames column in alphanumeric order
 
-    #Create list to store track information for printing
-    track_print :list[list[str]] = []
-    track_print.append(["filename", "disc_num", "track_num", "track_title", "artists"])
+    #Extract working directory of filenames from atd_filename
+    path_end_index :int = -1
+    for i, character in enumerate(args.atd_filename):
+        if character == "/":
+            path_end_index = i
+    if path_end_index == -1:
+        atd_dir = "."
+    else:
+        atd_dir :str = args.atd_filename[:path_end_i+1]
 
+    #Add any files with music extensions to the filenames list
+    filenames :list[str] = []
+    for file in os.listdir(atd_dir):
+        if os.path.splitext(file)[1] in COMMON_MUSIC_FILE_EXTS:
+            filenames.append(file)
+    filenames = sorted(filenames)
+
+#Create list to store track information for writing to atd file after parsing the 
+#track information
+track_write :list[list[str]] = []
+track_write.append(["filename", "disc_num", "track_num", "track_title", "artists"])
+
+if (args.files_include):
     #Create iterator to loop through filenames
     filename_i :int = 0
+    num_filenames = len(filenames)
 
-    #Write track information to track_print
-    for disc_num, disc in enumerate(result["release"]["medium-list"]):
-        for track_num, track in enumerate(disc["track-list"]):
+#Write track information to track_write
+for disc_num, disc in enumerate(result["release"]["medium-list"]):
+    for track_num, track in enumerate(disc["track-list"]):
+        if (args.files_include):
             try:
-                track_print.append([filenames[filename_i], str(disc_num+1), str(track_num+1), track["recording"]["title"], album_artist])
+                track_write.append([filenames[filename_i], str(disc_num+1), str(track_num+1), track["recording"]["title"], album_artist])
                 filename_i += 1
             except:
-                track_print.append(["", str(disc_num+1), str(track_num+1), track["recording"]["title"], album_artist])
+                track_write.append(["", str(disc_num+1), str(track_num+1), track["recording"]["title"], album_artist])
 
-    #Find longest entry in each column, so table of track info can be printed in a more organized fashion
-    col_lengths :list[int] = [0] * len(track_print[0])
-    for row in track_print:
-        for i in range(len(row)):
-            if len(row[i]) > col_lengths[i]:
-                col_lengths[i] = len(row[i])
+        else:
+            track_write.append(["", str(disc_num+1), str(track_num+1), track["recording"]["title"], album_artist])
 
-    #Write track info to atd.file
-    for row in track_print:
-        for i in range(len(row)):
-            atd_file.write(f'{row[i]}{" "*(col_lengths[i]-len(row[i]))}')
-            if i != (len(row) - 1):
-                atd_file.write("\t|")
-        atd_file.write("\n")
+#Find longest entry in each column, so table of track info can be printed in a more organized fashion
+col_lengths :list[int] = [0] * len(track_write[0])
+for row in track_write:
+    for i in range(len(row)):
+        if len(row[i]) > col_lengths[i]:
+            col_lengths[i] = len(row[i])
 
-    atd_file.close()
+#Write track info to atd.file
+for row in track_write:
+    for i in range(len(row)):
+        atd_file.write(f'{row[i]}{" "*(col_lengths[i]-len(row[i]))}')
+        if i != (len(row) - 1):
+            atd_file.write("\t|")
+    atd_file.write("\n")
 
-    print(f'Successfully generated "{atd_filename}"! Please check the cover art path, genres, and filenames in this atd file before using it with tag_album.py.')
+atd_file.close()
+
+print(f'"{args.atd_filename}" has been created.')
+
