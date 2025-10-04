@@ -1,0 +1,10 @@
+Libraries to integrate with cpp project:
+	- for converting file types -> ffmpeg (necessary, or can any filetype just be tagged with TagLib?)
+	- music file tagging: TagLib -> https://taglib.org/
+	- musicbrainz metadata: libmusicbrainz -> https://musicbrainz.org/doc/libmusicbrainz
+
+Project structure:
+	- main file (ofc)
+	- metadata.h -> defines AlbumInfo and TrackInfo structs
+	- gen_atd.h & gen_atd.cpp -> functions to fetch metadata from musicbrainz and store in instances of AlbumInfo and TrackInfo structs
+	- tag_album.h & tag_album.cpp -> functions to tag music files

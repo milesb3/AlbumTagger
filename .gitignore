@@ -1,3 +1,4 @@
 *.atd
+*.swp
 !empty-template.atd
 !example.atd

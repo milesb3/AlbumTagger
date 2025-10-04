@@ -1,12 +1,8 @@
 TODO:
-    - Separate atd file parser from AlbumInfo and TrackInfo class constructors (AlbumInfo.py)
-    - Replace homemade argument parser with python argparse (get_musicbrainz_metadata.py, tag_album.py)
-    - Fix cover_file_path atd ambiguous input name (parser)
-    - Fix year not tagging properly
+	- C++ rewrite (for learning and efficiency); see cpp_version/
     - Add additional options to tag_album.py
         - Print parsed metadata from album_info as soon as constructor has finished
         - Don't print ffmpeg output when converting files to mp3
     - Add option to set cover per track, not just album wide, in atd files
-    - Add CLI to organize album music files within an atd file, then tag the album.
-    - Rust rewrite ? (for learning purposes)
+    - Add CLI to organize album music files within an atd file, then tag the album. Or some easier way to quickly rename song files to fit better in .atd.
 
