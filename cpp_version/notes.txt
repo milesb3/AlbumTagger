@@ -5,6 +5,6 @@ Libraries to integrate with cpp project:
 
 Project structure:
 	- main file (ofc)
-	- metadata.h -> defines AlbumInfo and TrackInfo structs
-	- gen_atd.h & gen_atd.cpp -> functions to fetch metadata from musicbrainz and store in instances of AlbumInfo and TrackInfo structs
+	- metadata.hpp -> defines AlbumInfo and TrackInfo classes
+	- gen_atd.h & gen_atd.cpp -> functions to fetch metadata from musicbrainz and store in instances of AlbumInfo and TrackInfo classes
 	- tag_album.h & tag_album.cpp -> functions to tag music files
